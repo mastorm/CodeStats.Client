@@ -22,8 +22,10 @@ namespace CodeStats.Client
         internal bool Added { get; set; }
         private IAdornmentLayer _adornmentLayer;
         public string MachineKey { get; set; }
-        internal Dictionary<string, int> Experiences = new Dictionary<string, int>();
         private Task _publisher = null;
+        private readonly ConfigurationRetriever _config = new ConfigurationRetriever();
+        Pulse pulse = new Pulse();
+
 
         public CommandFilter(IWpfTextView textView)
         {
@@ -36,47 +38,20 @@ namespace CodeStats.Client
             if (nCmdID != (uint)VSConstants.VSStd2KCmdID.TYPECHAR && nCmdID != (uint)VSConstants.VSStd2KCmdID.BACKSPACE)
                 return NextTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
-            incrementOrAdd(_textView.TextBuffer.ContentType.DisplayName);
-            MessageBox.Show("Added one to: " + _textView.TextBuffer.ContentType.DisplayName);
+            pulse.IncrementExperience(_textView.TextBuffer.ContentType.DisplayName);
 
             if (_publisher == null)
             {
-                _publisher = Task.Factory.StartNew(() =>
+                _publisher = Task.Factory.StartNew(async () =>
                 {
                     Thread.Sleep(10 * 1000); // Hopefully 10 seconds?
 
-                    string experiences = "";
-                    foreach (var experience in Experiences)
-                    {
-                        experiences += $"In Language {experience.Key}, you earned {experience.Value} xp\n";
-                    }
-
-                    EnvDTE.DTE dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                    // Access options page
-                    var props = dte.get_Properties(@"CodeStats", "General");
-                    var pathProperty = props.Item("MachineKey");
-                    var machineKey = pathProperty.Value as string;
-
-                    MessageBox.Show(experiences);
-                    MessageBox.Show("Pushing to " + machineKey);
-                    Experiences.Clear();
+                    await pulse.Execute();
                     _publisher = null;
                 });
             }
 
             return NextTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-        }
-
-        private void incrementOrAdd(string lang)
-        {
-            if (Experiences.ContainsKey(lang))
-            {
-                Experiences[lang]++;
-            }
-            else
-            {
-                Experiences.Add(lang, 1);
-            }
         }
 
         int IOleCommandTarget.QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

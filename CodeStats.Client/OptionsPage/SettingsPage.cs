@@ -24,9 +24,25 @@ namespace CodeStats.Client.OptionsPage
             }
         }
 
+        private string _pulseApiUrl = "";
+        [Category("CodeStats Settings")]
+        [DisplayName("API Url")]
+        [Description("The Pulse API that requests get sent to. DO NOT CHANGE if you dont know what you are doing!")]
+        public string PulseApiUrl
+        {
+            get { return _pulseApiUrl; }
+            set
+            {
+                _pulseApiUrl = value;
+            }
+        }
+
         public SettingsPage()
         {
             InitializeComponent();
+            if(PulseApiUrl == "")
+                PulseApiUrl = "https://codestats.net/api/my/pulses";
+
         }
     }
 }
