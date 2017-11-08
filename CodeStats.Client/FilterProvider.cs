@@ -7,13 +7,21 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+using CodeStats.Client.OptionsPage;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
 namespace CodeStats.Client
 {
     [Export(typeof(IVsTextViewCreationListener))]
     [ContentType("text")]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
-    internal class FilterProvider : IVsTextViewCreationListener
+    [Guid("5c3c0aa0-0bc8-43c5-afc9-5aa55662794b")]
+    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideOptionPage(typeof(SettingsPage), "CodeStats", "General", 0, 0, true)]
+    public  class FilterProvider : Package, IVsTextViewCreationListener
     {
         [Export(typeof(AdornmentLayerDefinition))]
         [Name("CodeStatsClientLayer")]
@@ -36,6 +44,7 @@ namespace CodeStats.Client
         {
             if (commandFilter.Added == false)
             {
+                commandFilter.MachineKey = MachineKey;
                 //get the view adapter from the editor factory
                 IOleCommandTarget next;
                 int hr = viewAdapter.AddCommandFilter(commandFilter, out next);
@@ -48,6 +57,20 @@ namespace CodeStats.Client
                         commandFilter.NextTarget = next;
                 }
             }
+        }
+
+        public string MachineKey
+        {
+            get
+            {
+                SettingsPage page = (SettingsPage)GetDialogPage(typeof(SettingsPage));
+                return page.MachineKey;
+            }
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
         }
 
     }

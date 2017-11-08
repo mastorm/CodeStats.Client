@@ -11,19 +11,19 @@ using System.Windows.Controls;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows;
+using CodeStats.Client.OptionsPage;
 
 namespace CodeStats.Client
 {
-    class CommandFilter : IOleCommandTarget
+    public class CommandFilter : IOleCommandTarget
     {
         private IWpfTextView _textView;
         internal IOleCommandTarget NextTarget { get; set; }
         internal bool Added { get; set; }
         private IAdornmentLayer _adornmentLayer;
-
+        public string MachineKey { get; set; }
         internal Dictionary<string, int> Experiences = new Dictionary<string, int>();
         private Task _publisher = null;
-
 
         public CommandFilter(IWpfTextView textView)
         {
@@ -50,7 +50,15 @@ namespace CodeStats.Client
                     {
                         experiences += $"In Language {experience.Key}, you earned {experience.Value} xp\n";
                     }
+
+                    EnvDTE.DTE dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                    // Access options page
+                    var props = dte.get_Properties(@"CodeStats", "General");
+                    var pathProperty = props.Item("MachineKey");
+                    var machineKey = pathProperty.Value as string;
+
                     MessageBox.Show(experiences);
+                    MessageBox.Show("Pushing to " + machineKey);
                     Experiences.Clear();
                     _publisher = null;
                 });
