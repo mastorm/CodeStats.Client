@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,11 @@ namespace CodeStats.Client
             public int Xp { get; set; }
         }
 
+        public Pulse()
+        {
+            _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.5");
+        }
+
         public void IncrementExperience(string language)
         {
             var result = Experiences.FirstOrDefault(pulseXp => pulseXp.Language == language);
@@ -47,7 +53,6 @@ namespace CodeStats.Client
         {
             var apiKey = config.GetMachineKey();
             var pluseApiUrl = config.GetPulseApiUrl();
-            _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.5");
 
             if (apiKey == "")
                 return;
