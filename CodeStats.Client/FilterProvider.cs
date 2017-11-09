@@ -42,20 +42,20 @@ namespace CodeStats.Client
 
         void AddCommandFilter(IVsTextView viewAdapter, CommandFilter commandFilter)
         {
-            if (commandFilter.Added == false)
+            if (commandFilter.Added)
             {
-                commandFilter.MachineKey = MachineKey;
-                //get the view adapter from the editor factory
-                IOleCommandTarget next;
-                int hr = viewAdapter.AddCommandFilter(commandFilter, out next);
+                return;
+            }
 
-                if (hr == VSConstants.S_OK)
-                {
-                    commandFilter.Added = true;
-                    //you'll need the next target for Exec and QueryStatus
-                    if (next != null)
-                        commandFilter.NextTarget = next;
-                }
+            IOleCommandTarget next;
+            int hr = viewAdapter.AddCommandFilter(commandFilter, out next);
+
+            if (hr == VSConstants.S_OK)
+            {
+                commandFilter.Added = true;
+                //you'll need the next target for Exec and QueryStatus
+                if (next != null)
+                    commandFilter.NextTarget = next;
             }
         }
 

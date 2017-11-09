@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace CodeStats.Client.OptionsPage
 {
+    #pragma warning disable CS3021 // Im really sure i know what im doing here. Do not try this at home! :)
     [CLSCompliant(false), ComVisible(true)]
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("5c3c0aa0-0bc8-43c5-afc9-5aa55662794b")]

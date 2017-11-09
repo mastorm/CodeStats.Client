@@ -47,7 +47,7 @@ namespace CodeStats.Client
         {
             var apiKey = config.GetMachineKey();
             var pluseApiUrl = config.GetPulseApiUrl();
-            _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.0.1");
+            _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.5");
 
             if (apiKey == "")
                 return;

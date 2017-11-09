@@ -21,10 +21,9 @@ namespace CodeStats.Client
         internal IOleCommandTarget NextTarget { get; set; }
         internal bool Added { get; set; }
         private IAdornmentLayer _adornmentLayer;
-        public string MachineKey { get; set; }
         private Task _publisher = null;
         private readonly ConfigurationRetriever _config = new ConfigurationRetriever();
-        Pulse pulse = new Pulse();
+        private Pulse pulse = new Pulse();
 
 
         public CommandFilter(IWpfTextView textView)
