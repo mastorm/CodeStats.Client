@@ -30,7 +30,8 @@ namespace CodeStats.Client
 
         public Pulse()
         {
-            _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.5");
+            if(!_client.DefaultRequestHeaders.Contains("User-Agent"))
+                _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.6");
         }
 
         public void IncrementExperience(string language)
@@ -57,7 +58,7 @@ namespace CodeStats.Client
             if (apiKey == "")
                 return;
 
-            var requestContent = new StringContent(JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
+            var requestContent = new StringContent(JsonConvert.SerializeObject(this, Formatting.Indented));
             requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             requestContent.Headers.Add("X-API-Token", apiKey);
 
