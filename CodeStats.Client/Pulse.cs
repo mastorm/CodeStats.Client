@@ -31,7 +31,7 @@ namespace CodeStats.Client
         public Pulse()
         {
             if(!_client.DefaultRequestHeaders.Contains("User-Agent"))
-                _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.7");
+                _client.DefaultRequestHeaders.Add("User-Agent", "CodeStats.Client/0.5.8");
         }
 
         public void IncrementExperience(string language)
