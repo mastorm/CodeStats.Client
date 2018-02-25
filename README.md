@@ -1,6 +1,6 @@
 # CodeStats.Client
 
-This is a low-footprint Visual Studio plugin for [CodeStats](https://codestats.net/), written in and tested with VS2017. There will be builds for 2015.
+This is a low-footprint Visual Studio plugin for [CodeStats](https://codestats.net/), written in and tested with VS2017. It is compatible with VS 2015 and above. For building, you need an installed VS 2015.
 
 ## How to configure
 
